@@ -1,9 +1,10 @@
 install.packages("lsr")
 install.packages("stringr")
+install.packages("tidyverse")
 library(lsr)
 library(stringr)
 
-
+#Descriptive Stats
 #loading the data and making '.' as NA
 data<-read.csv("loans.csv",na.strings=".")
 View(data)
@@ -108,5 +109,50 @@ str(data)
 sum(is.na(data))
 sapply(data, function(x) sum(is.na(x)))
 
+#filling missing values with mdian for numerical columns as the number of missing values is very less
+#'na.rm=TRUE' indicates: calculate the mean of non missing values
+data$Amount.Requested[is.na(data$Amount.Requested)]<-mean(data$Amount.Requested,na.rm=TRUE)
+data$Debt.To.Income.Ratio[is.na(data$Debt.To.Income.Ratio)]<-mean(data$Debt.To.Income.Ratio,na.rm=TRUE)
+data$Loan.Length[is.na(data$Loan.Length)]<-mean(data$Loan.Length,na.rm=TRUE)
+data$Open.CREDIT.Lines[is.na(data$Open.CREDIT.Lines)]<-mean(data$Open.CREDIT.Lines,na.rm=TRUE)
+data$Revolving.CREDIT.Balance[is.na(data$Revolving.CREDIT.Balance)]<-mean(data$Revolving.CREDIT.Balance,na.rm=TRUE)
 
-#as from 2500 rows there are maximum 4 missing values in a single column we can use mean to fill them
+#filling the missing value of state by the most occuring
+table(data$State)
+#we can see that NY is the most occuring
+data$State[is.na(data$State)]<-"NY"
+
+#Employment.length ha 80 missing values.
+#First we will fill with mean in a decoy column and check sd before and after
+sd(data$Employment.Length,na.rm=TRUE)
+x=data$Employment.Length
+x[is.na(x)]<-mean(data$Employment.Length,na.rm=TRUE)
+sd(x)
+
+#we see that there is not much difference in the sd, hence we can apply this to the main dataset
+data$Employment.Length[is.na(data$Employment.Length)]<-mean(data$Employment.Length,na.rm=TRUE)
+
+#check whether number of missing are zero or not
+sum(is.na(data))
+
+
+#Exploratory Analysis
+
+#checking the correlations for numeric columns with interest rate 
+cor(data[, sapply(data, class) != "factor"])
+
+#we can see that FICO.mean and Amount.Requested have a significant negative correlation and Loan.Length has a significant positive Correlation
+
+#now we will see the correlation with factor variables through boxplots
+par(mfrow=c(2,2))
+plot(data$Interest.Rate~data$State)
+plot(data$Interest.Rate~data$Home.Ownership)
+plot(data$Interest.Rate~data$Loan.Purpose)
+
+#we can see that in all plots , the means all groups vary significantly and hence won't add much value to our analysis
+
+#Therefore we take FICO.mean, Amount.Requested and Loan.Length to apply to our model
+#After reading about FICO we come to know that the other factors are included in FICO and hence gives us another reason to exclude them
+
+#Multilinear Regression
+
