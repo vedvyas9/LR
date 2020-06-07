@@ -176,7 +176,7 @@ confint(model)
 #It can be seen that, FICO.Mean and Loan.Length are significantly effecting Interest.Rate while changes in Amount.Requested is not significantly associated with Interest.Rate.
 #We found that Amount.Requested is not significant in the multiple regression model. This means that, for a fixed amount of FICO.mean and Loan.Length, changes in Amount.Requested will not significantly affect Interest.Rate.
 
-#finally we can write our model equation as:Interest.Rate=70.33-0.08516*FICO.mean-0.0006*Amount.Requested+2.17*Loan.Length
+#finally we can write our model equation as:Interest.Rate=65.97-0.08516*FICO.mean-0.0006*Amount.Requested+0.181*Loan.Length
 
 #model without Amount.Requested
 model1<-lm(data$Interest.Rate~data$FICO.Mean+data$Loan.Length)
@@ -184,6 +184,7 @@ summary(model1)
 summary(model1)$coefficient
 confint(model1)
 
-#Multiple R-squared: 0.6893
+#Multiple R-squared: 0.6894
 
-#finally we can write our model equation as:Interest.Rate=70.23-0.08519*FICO.mean+2.18*Loan.Length
+#finally we can write our model equation as:Interest.Rate=65.87-0.08519*FICO.mean+0.18*Loan.Length
+
