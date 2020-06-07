@@ -1,9 +1,9 @@
-install.packages("lsr")
+
 install.packages("stringr")
 install.packages("tidyverse")
-library(lsr)
-library(stringr)
 
+library(stringr)
+library(tidyverse)
 #Descriptive Stats
 #loading the data and making '.' as NA
 data<-read.csv("loans.csv",na.strings=".")
@@ -155,4 +155,35 @@ plot(data$Interest.Rate~data$Loan.Purpose)
 #After reading about FICO we come to know that the other factors are included in FICO and hence gives us another reason to exclude them
 
 #Multilinear Regression
+model<-lm(data$Interest.Rate~data$FICO.Mean+data$Amount.Requested+data$Loan.Length)
 
+#Summary of the model
+summary(model)
+
+#To see which predictor variables are significant, we can examine the coefficients table,
+summary(model)$coefficient
+
+#The confidence interval of the model coefficient
+confint(model)
+
+#Multiple R-squared: 0.6896
+
+
+#Conclusion
+#The first step in interpreting the multiple regression analysis is to examine the F-statistic and the associated p-value, at the bottom of model summary.
+#In our example, it can be seen that p-value of the F-statistic is <2e-16, which is highly significant. This means that, at least, one of the predictor variables is significantly related to the outcome variable.
+#For a given the predictor, the t-statistic evaluates whether or not there is significant association between the predictor and the outcome variable, that is whether the beta coefficient of the predictor is significantly different from zero.
+#It can be seen that, FICO.Mean and Loan.Length are significantly effecting Interest.Rate while changes in Amount.Requested is not significantly associated with Interest.Rate.
+#We found that Amount.Requested is not significant in the multiple regression model. This means that, for a fixed amount of FICO.mean and Loan.Length, changes in Amount.Requested will not significantly affect Interest.Rate.
+
+#finally we can write our model equation as:Interest.Rate=70.33-0.08516*FICO.mean-0.0006*Amount.Requested+2.17*Loan.Length
+
+#model without Amount.Requested
+model1<-lm(data$Interest.Rate~data$FICO.Mean+data$Loan.Length)
+summary(model1)
+summary(model1)$coefficient
+confint(model1)
+
+#Multiple R-squared: 0.6893
+
+#finally we can write our model equation as:Interest.Rate=70.23-0.08519*FICO.mean+2.18*Loan.Length
